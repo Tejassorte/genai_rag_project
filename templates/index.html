@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 RAG PDF Assistant</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 RAG PDF Assistant</h1>
+            <p class="subtitle">Upload your PDFs & ask intelligent questions effortlessly.</p>
+        </header>
+
+        <section class="upload-section">
+            <form id="uploadForm" class="card">
+                <input type="file" name="pdf" accept=".pdf" id="fileInput" required>
+                <label for="fileInput" class="upload-label">Choose PDF</label>
+                <button type="submit" class="upload-btn">Upload PDF</button>
+            </form>
+            <p id="uploadStatus" class="status-msg"></p>
+        </section>
+
+        <section class="qa-section">
+            <div class="input-group">
+                <input type="text" id="question" placeholder="💬 Ask a question about your PDF..." required>
+                <button id="askBtn" class="ask-btn">Ask</button>
+            </div>
+            <div id="answer" class="answer-box"></div>
+        </section>
+    </div>
+
+    <!-- Subtle Background Animation -->
+    <div class="bg-animation"></div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const askBtn = document.getElementById('askBtn');
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
+            uploadStatus.innerText = "⏳ Uploading...";
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            uploadStatus.innerText = data.message || data.error;
+        });
+
+        askBtn.addEventListener('click', async () => {
+            const question = document.getElementById('question').value;
+            if (!question.trim()) return alert("Please enter a question!");
+            document.getElementById('answer').innerHTML = "<p class='loading'>Thinking... 🤔</p>";
+
+            const res = await fetch('/ask', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question})
+            });
+
+            const data = await res.json();
+            document.getElementById('answer').innerHTML = `<p>${data.answer || data.error}</p>`;
+        });
+    </script>
+</body>
+</html>
