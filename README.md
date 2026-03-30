@@ -169,7 +169,6 @@ You can include a screenshot of your app’s UI:
 ## 👨‍💻 Author
 
 **Tejas Sorte**
-🎓 Student Development Faculty Trainee
 📍 India
 💼 [GitHub](https://github.com/Tejassorte) • [LinkedIn](https://www.linkedin.com/notifications/?filter=all)
 
